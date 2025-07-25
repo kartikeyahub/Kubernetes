@@ -81,7 +81,7 @@ spec:
 - Deploying untrusted workloads
 
 
-```markdown
+
 # Kubernetes `emptyDir` Volumes
 
 ## Overview
