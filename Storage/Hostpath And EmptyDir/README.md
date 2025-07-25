@@ -80,7 +80,7 @@ spec:
 - Need portable storage across nodes
 - Deploying untrusted workloads
 
-
+-------------------------------------------------------------
 
 # Kubernetes `emptyDir` Volumes
 
@@ -179,6 +179,8 @@ kubectl exec ram-emptydir -- df -h /data
 ```
 
 
+----------------------------------------------------------
+
 ### EmptyDir
 ```yaml
 apiVersion: v1
@@ -212,7 +214,7 @@ spec:
 
 
 
-
+------------------------------------------------------------------
 
 
 
