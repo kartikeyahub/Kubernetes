@@ -1,4 +1,3 @@
-```
 ## Introduction
 Kubernetes volumes enable data persistence and sharing between containers in a pod. They decouple storage from pods, allowing applications to maintain state across restarts and reschedules.
 ```
@@ -32,19 +31,27 @@ spec:
       path: /ks/data
 ```
 
-## Verification 
 
-# Check pod status
-kubectl get pods -o wide
+2. **Check pod status**:
+   ```bash
+   kubectl get pods -o wide
+   ```
 
-# Check host directory
-ls -la /data/hostpath-demo
+3. **Check host directory**:
+   ```bash
+   ls -la /data/hostpath-demo
+   ```
 
-# Connect to Container
-kubectl exec -it hostpath-demo -- /bin/sh
+3. **Connect to Container**:
+   ```bash
+   kubectl exec -it hostpath-demo -- /bin/sh
+   ```
+3. **Verify volume mounting**:
+   ```bash
+   kubectl exec hostpath-demo -- ls /usr/share/nginx/html
+   ```
 
-# Verify volume mounting
-kubectl exec hostpath-demo -- ls /usr/share/nginx/html
+
 
 
 `hostPath` volumes mount files or directories from the host node's filesystem into pods. Use with caution due to security implications.
