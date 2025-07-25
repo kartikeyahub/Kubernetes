@@ -148,11 +148,6 @@ kubectl get nodes
    kubeadm reset --force
    ```
 
-3. **Set proper permissions**:
-   ```bash
-   sudo chmod 700 /var/lib/etcd
-   ```
-
 
 4. **Containerd Cleanup Procedures**
 
