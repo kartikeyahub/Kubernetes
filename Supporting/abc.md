@@ -72,8 +72,13 @@ sudo systemctl start kubelet
    ```bash
    sudo kubeadm token create --print-join-command
    ```
-
+## Worker Node Configuration
 8. **Worker Node Join Token - { Master Node Config }**
    ```bash
    sudo su -
+   ```
+9. **Set proper permissions**:
+   ```bash
+   swapoff -a
+   kubeadm reset --force
    ```
