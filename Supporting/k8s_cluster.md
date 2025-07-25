@@ -142,6 +142,61 @@ kubectl get nodes
    sudo chmod 700 /var/lib/etcd
    ```
 
+3. **Set proper permissions**:
+   ```bash
+   swapoff -a
+   kubeadm reset --force
+   ```
+
+3. **Set proper permissions**:
+   ```bash
+   sudo chmod 700 /var/lib/etcd
+   ```
+
+
+4. **Containerd Cleanup Procedures**
+
+
+## 2. Nuclear Option (For Stubborn Containers)
+```bash
+# First stop all Kubernetes services
+sudo systemctl stop kubelet
+
+# Stop containerd service
+sudo systemctl stop containerd
+
+# Forcefully clean up runtime directories
+sudo umount -l /run/containerd/io.containerd.runtime.v2.task/k8s.io/*/rootfs 2>/dev/null || true
+sudo rm -rf /run/containerd/*
+```
+
+## 3. Restart Services
+```bash
+sudo systemctl start containerd
+sudo systemctl start kubelet
+```
+
+## 4. Verification
+```bash
+# Check runtime directory
+sudo ls -la /run/containerd/io.containerd.runtime.v2.task/k8s.io/
+
+# Check for remaining shim processes
+ps aux | grep containerd-shim
+```
+
+## 5. Complete Reset (Last Resort)
+```bash
+sudo systemctl stop kubelet containerd
+sudo rm -rf /run/containerd/* /var/lib/containerd/*
+sudo systemctl start containerd
+sudo systemctl start kubelet
+
+# Recreate all pods
+kubectl get pods -A -o name | xargs -I{} kubectl delete --force --grace-period=0 {}
+```
+
+
 4. **Initialize cluster**:
    ```bash
    sudo kubeadm init --ignore-preflight-errors=DirAvailable--var-lib-etcd
