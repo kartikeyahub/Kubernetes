@@ -1,6 +1,6 @@
 ## Introduction
 Kubernetes volumes enable data persistence and sharing between containers in a pod. They decouple storage from pods, allowing applications to maintain state across restarts and reschedules.
-```
+
 ## Volume Types
 
 ### Ephemeral Volumes
