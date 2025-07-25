@@ -146,17 +146,19 @@ kubectl get nodes
    ```bash
    sudo kubeadm init --ignore-preflight-errors=DirAvailable--var-lib-etcd
    ```
+
 5. **Clearing .kube DIR**:
    ```bash
   rm -rf .kube/
    ```
+
 6. **kubeconfig update**:
 ```
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
 ```
+
 7. **Install Calico**:
 ```bash
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
