@@ -1,23 +1,4 @@
-Here's a polished `README.md` format with proper structure, headers, and GitHub-friendly formatting:
-
-```markdown
-# Kubernetes Volumes Overview
-
-![Kubernetes Logo](https://upload.wikimedia.org/wikipedia/commons/3/39/Kubernetes_logo_without_workmark.svg)  
-*Persistent storage solutions for containerized applications*
-
-## Table of Contents
-- [Introduction](#introduction)
-- [Volume Types](#volume-types)
-  - [Ephemeral Volumes](#ephemeral-volumes)
-  - [Persistent Volumes](#persistent-volumes-pv)
-- [Core Concepts](#core-concepts)
-  - [PVC](#persistent-volume-claims-pvc)
-  - [Storage Classes](#storage-classes)
-- [Supported Storage Backends](#supported-storage-backends)
-- [Usage Example](#usage-example)
-- [Best Practices](#best-practices)
-
+```
 ## Introduction
 Kubernetes volumes enable data persistence and sharing between containers in a pod. They decouple storage from pods, allowing applications to maintain state across restarts and reschedules.
 
