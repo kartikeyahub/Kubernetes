@@ -67,7 +67,13 @@ sudo systemctl start kubelet
    ```bash
    kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
    ```
+
 7. **Worker Node Join Token - { Master Node Config }**
    ```bash
    sudo kubeadm token create --print-join-command
+   ```
+
+8. **Worker Node Join Token - { Master Node Config }**
+   ```bash
+   sudo su -
    ```
