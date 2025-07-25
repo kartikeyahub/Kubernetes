@@ -39,7 +39,7 @@ spec:
 
 3. **Check host directory**:
    ```bash
-   ls -la /data/hostpath-demo
+   ls -la /ks/data
    ```
 
 3. **Connect to Container**:
@@ -79,6 +79,145 @@ spec:
 - Running multi-node clusters
 - Need portable storage across nodes
 - Deploying untrusted workloads
+
+
+```markdown
+# Kubernetes `emptyDir` Volumes
+
+## Overview
+`emptyDir` is a temporary storage volume created when a Pod is assigned to a node. It exists for the Pod's lifetime and is deleted when the Pod is removed.
+
+## Key Features
+
+| Characteristic       | Description                                                                 |
+|----------------------|-----------------------------------------------------------------------------|
+| **Lifetime**         | Created when Pod starts, deleted when Pod terminates                       |
+| **Storage Location** | Node filesystem (default) or RAM (`medium: Memory`)                        |
+| **Capacity**         | Can be limited with `sizeLimit`                                            |
+| **Access**           | Shared between containers in the same Pod                                   |
+| **Performance**      | RAM-backed is faster but volatile                                          |
+
+## When to Use
+
+✅ **Appropriate Use Cases**:
+- Temporary cache storage (e.g., NGINX cache)
+- Sharing files between containers in the same Pod
+- Scratch space for batch processing
+- Checkpointing for crash recovery
+
+❌ **Avoid When**:
+- Data persistence is required
+- Sharing data across different Pods
+- Storing sensitive data in RAM-backed volumes
+
+## Example Configurations
+
+### Basic Usage
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: basic-emptydir
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    volumeMounts:
+    - name: cache
+      mountPath: /var/cache/nginx
+  volumes:
+  - name: cache
+    emptyDir: {}
+```
+
+### RAM-Backed with Size Limit
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ram-emptydir
+spec:
+  containers:
+  - name: processor
+    image: alpine
+    command: ["sh", "-c", "while true; do echo $(date) >> /data/log; sleep 1; done"]
+    volumeMounts:
+    - name: mem-vol
+      mountPath: /data
+  volumes:
+  - name: mem-vol
+    emptyDir:
+      medium: Memory
+      sizeLimit: 256Mi
+```
+
+## Best Practices
+
+1. **Security**:
+   ```yaml
+   securityContext:
+     runAsNonRoot: true
+     readOnlyRootFilesystem: true
+   ```
+
+2. **Resource Management**:
+   - Always set `sizeLimit` for RAM-backed volumes
+   - Monitor usage with `kubectl exec <pod> -- df -h`
+
+3. **Alternatives**:
+   - Use `PersistentVolumeClaim` for persistent storage
+   - Consider `hostPath` for node-specific temporary storage
+
+## Verification
+
+```bash
+# Check volume mounts
+kubectl exec basic-emptydir -- ls /var/cache/nginx
+
+# Monitor RAM usage
+kubectl exec ram-emptydir -- df -h /data
+```
+
+
+### EmptyDir
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: empty-demo
+  labels:
+    app: empty-test
+spec:
+  containers:
+  - name: app-container
+    image: nginx:alpine
+    volumeMounts:
+    - name: empty-volume
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: empty-volume
+    emptyDir: {}
+```
+
+
+3. **Connect to Container**:
+   ```bash
+   kubectl exec -it empty-demo -- /bin/sh
+   ```
+3. **Verify volume mounting**:
+   ```bash
+   df -h #check mountpoint
+   ```
+
+
+
+
+
+
+
+
+
+# Node Selector
 
 ### Secure Configuration
 ```yaml
