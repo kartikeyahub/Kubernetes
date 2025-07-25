@@ -149,7 +149,7 @@ kubectl get nodes
 
 5. **Clearing .kube DIR**:
    ```bash
-  rm -rf .kube/
+   rm -rf .kube/
    ```
 
 6. **kubeconfig update**:
