@@ -153,13 +153,13 @@ kubectl get nodes
    ```
 
 6. **kubeconfig update**:
-```bash
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
-```
+   ```bash
+   mkdir -p $HOME/.kube
+   sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   sudo chown $(id -u):$(id -g) $HOME/.kube/config
+   ```
 
 7. **Install Calico**:
-```bash
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-```
+   ```bash
+   kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
+   ```
