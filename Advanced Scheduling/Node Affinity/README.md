@@ -42,8 +42,6 @@ spec :
     disktype : data  # Must exist
 ```
 
-## Deployment with Node Selector and HostPath
-
 ```yaml
 apiVersion : apps/v1
 kind : Deployment
