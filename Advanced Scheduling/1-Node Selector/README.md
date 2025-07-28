@@ -39,7 +39,7 @@ spec :
       path : /ks/data
       type : Directory
   nodeSelector :
-    disktype : data  # Must exist
+    disktype : ssd  # Must exist
 ```
 
 ## Deployment with Node Selector and HostPath
@@ -71,7 +71,7 @@ spec :
           path : /ks/data
           type : Directory
       nodeSelector :
-        disktype : data  # Must exist
+        disktype : ssd  # Must exist
 ```
 
 ## Prerequisites
@@ -92,6 +92,11 @@ spec :
    # SSH into your node first
    mkdir -p /data/app-volume
    ```
+4. **Remove the node labels** :
+   ```bash
+   kubectl label nodes <node-name> disktype-
+   ```
+
 
 ## Best Practices
 
