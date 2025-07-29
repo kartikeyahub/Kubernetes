@@ -139,7 +139,7 @@ spec :
 - This Pod will **only** schedule on nodes where a Pod with `app=frontend` is already running.
 - `topologyKey: kubernetes.io/hostname` ensures they run on the **same node**.
 - Example 1 is fine for lab practice
-- **************************************************************************************************************************************
+*************************************************************************
 
 ---
 ## **2. Pod Anti-Affinity (`podAntiAffinity`)**
