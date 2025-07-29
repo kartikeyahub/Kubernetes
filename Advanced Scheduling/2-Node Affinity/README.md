@@ -19,49 +19,21 @@ Node Affinity is a Kubernetes feature that allows you to constrain which nodes y
 2. **preferredDuringSchedulingIgnoredDuringExecution** (Soft preference)
    - Kubernetes tries to schedule Pod on a node that meets the rules
    - If no matching node exists, Pod is scheduled on another available node
-
-## Example: Pod with Node Affinity
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: node-affinity-example
-spec:
-  containers:
-  - name: nginx
-    image: nginx:latest
-  affinity:
-    nodeAffinity:
-      # Hard requirement - must run on nodes with this label
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: topology.kubernetes.io/zone
-            operator: In
-            values:
-            - us-west-2a
-            - us-west-2b
-      # Soft preference - should run on nodes with this label if possible
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 1
-        preference:
-          matchExpressions:
-          - key: instance-type
-            operator: In
-            values:
-            - gpu.large
-            - gpu.xlarge
-```
-
+  
 ## Prerequisites
 
 1. **Label your nodes**:
    ```bash
+   # Server label
+   kubectl label nodes Kartikeyasoft-worker2 servertype=stage
+   kubectl label nodes Kartikeyasoft-worker2 servertype=prod
+
+   
    # Zone labels
    kubectl label nodes <node1> topology.kubernetes.io/zone=us-west-2a
    kubectl label nodes <node2> topology.kubernetes.io/zone=us-west-2b
    
+
    # Instance type labels
    kubectl label nodes <node3> instance-type=gpu.large
    kubectl label nodes <node4> instance-type=gpu.xlarge
@@ -71,6 +43,93 @@ spec:
    ```bash
    kubectl get nodes --show-labels
    ```
+
+
+## Example: Pod with Node Affinity - Example1
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cart
+  template:
+    metadata:
+      labels:
+        app: cart
+    spec:
+      containers:
+      - name: my-con
+        image: nginx
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: servertype
+                operator: In
+                values:
+                  - prod
+                  - stage
+```
+
+## Example: Pod with Node Affinity - Example2
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: cart
+  template:
+    metadata:
+      labels:
+        app: cart
+    spec:
+      containers:
+      - name: my-con
+        image: nginx
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: servertype
+                operator: In
+                values:
+                  - prod
+                  - stage
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 2
+            preference:
+              matchExpressions:
+              - key: servertype
+                operator: In
+                values:
+                  - prod
+
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: servertype
+                operator: In
+                values:
+                  - stage                
+```
+
+**Verify node labels**:
+   ```bash
+   kubectl get pods -o wide
+   ```
+
 
 ## Operators Available
 
