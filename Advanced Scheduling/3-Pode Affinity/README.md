@@ -103,7 +103,7 @@ spec :
 - This Pod will **only** schedule on nodes where a node label is `servertype=prod, stage` .
 
 
-### **Example: Deploy Pods Together (with label matching)**
+### ** Deploy Pods Together (with label matching)**
 ```yaml
 apiVersion : apps/v1
 kind : Deployment
