@@ -53,7 +53,7 @@ kind: Deployment
 metadata:
   name: my-deployment
 spec:
-  replicas: 3
+  replicas: 10
   selector:
     matchLabels:
       app: cart
