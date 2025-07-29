@@ -409,4 +409,3 @@ spec:
 - Check scheduling with `kubectl describe pod <pod-name>`.
 - Modify based on your node labels (`kubectl get nodes --show-labels`).
 
-Let me know if you need further refinements! 🚀
