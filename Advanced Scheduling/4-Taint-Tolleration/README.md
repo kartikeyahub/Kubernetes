@@ -1,4 +1,4 @@
-# **Kubernetes Taints & Tolerations - Quick Guide (`README.md`)**
+# **Kubernetes Taints & Tolerations - Quick Guide **
 
 ## **1. What are Taints & Tolerations?**
 - **Taints**: Node property that *repels* Pods unless they explicitly tolerate it  
