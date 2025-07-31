@@ -30,22 +30,63 @@ Taints and tolerations are Kubernetes mechanisms that control pod scheduling on 
 
 ## Examples
 
-### 1. Tainting a Node
+# Kubernetes Node Taints Management
+
+## Table of Contents
+- [Adding a Taint to a Node](#adding-a-taint-to-a-node)
+- [Removing a Taint from a Node](#removing-a-taint-from-a-node)
+- [Viewing Existing Taints](#viewing-existing-taints)
+- [Common Taint Examples](#common-taint-examples)
+- [Best Practices](#best-practices)
+
+## Adding a Taint to a Node
+
+### Using kubectl command
 ```sh
+kubectl taint nodes <node-name> <key>=<value>:<effect>
 kubectl taint node mynode123 env=prod:NoSchedule
 ```
 
-### 2. Node Manifest with Taint
+Where:
+- `<node-name>`: Name of your node (e.g., `node-1`)
+- `<key>`: Taint identifier (e.g., `env`)
+- `<value>`: Taint value (e.g., `production`)
+- `<effect>`: One of `NoSchedule`, `PreferNoSchedule`, or `NoExecute`
+
+**Examples:**
+```sh
+# Reserve node for production workloads
+kubectl taint nodes node-1 env=production:NoSchedule
+
+# Mark node for maintenance
+kubectl taint nodes node-2 maintenance=true:NoExecute
+
+# Prefer not to schedule GPU workloads
+kubectl taint nodes gpu-node-1 hardware=gpu:PreferNoSchedule
+```
+
+### Using Node Manifest
 ```yaml
 apiVersion: v1
 kind: Node
 metadata:
-  name: mynode123
+  name: node-1
 spec:
   taints:
-    - key: env
-      value: prod
-      effect: NoSchedule
+  - key: "env"
+    value: "production"
+    effect: "NoSchedule"
+```
+## Viewing Existing Taints
+
+### List all nodes with taints
+```sh
+kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints
+```
+
+### Detailed view for a specific node
+```sh
+kubectl describe node <node-name> | grep Taints
 ```
 
 ### 3. Pod with Toleration
@@ -87,6 +128,28 @@ spec:
       effect: NoExecute
 ```
 
+
+## Removing a Taint from a Node
+
+### Basic Removal
+```sh
+kubectl taint nodes <node-name> <key>-
+```
+
+**Examples:**
+```sh
+# Remove taint with key 'env'
+kubectl taint nodes node-1 env-
+
+# Remove specific taint (when multiple exist with same key)
+kubectl taint nodes node-1 env=production:NoSchedule-
+```
+
+### Removing All Taints
+```sh
+kubectl taint nodes <node-name> --all
+```
+
 ## Best Practices
 
 1. Use descriptive keys and values (e.g., `gpu=true`, `env=production`)
@@ -119,141 +182,3 @@ A: The scheduling restriction is immediately lifted, and pods without toleration
 A: `kubectl taint node <node-name> <key>-` (note the trailing hyphen)
 ```
 
-This README.md features:
-- Clear section headers
-- Consistent formatting
-- Code blocks with syntax highlighting
-- Tables for structured information
-- Practical examples
-- Best practices and troubleshooting tips
-- FAQ section
-
-The document is well-organized and provides comprehensive information while remaining easy to navigate.
-
-
-Here's a clear `.md` format document explaining how to add and remove taints from Kubernetes nodes, with proper sections and examples:
-```
-
-
-# Kubernetes Node Taints Management
-
-## Table of Contents
-- [Adding a Taint to a Node](#adding-a-taint-to-a-node)
-- [Removing a Taint from a Node](#removing-a-taint-from-a-node)
-- [Viewing Existing Taints](#viewing-existing-taints)
-- [Common Taint Examples](#common-taint-examples)
-- [Best Practices](#best-practices)
-
-## Adding a Taint to a Node
-
-### Using kubectl command
-```sh
-kubectl taint nodes <node-name> <key>=<value>:<effect>
-```
-
-Where:
-- `<node-name>`: Name of your node (e.g., `node-1`)
-- `<key>`: Taint identifier (e.g., `env`)
-- `<value>`: Taint value (e.g., `production`)
-- `<effect>`: One of `NoSchedule`, `PreferNoSchedule`, or `NoExecute`
-
-**Examples:**
-```sh
-# Reserve node for production workloads
-kubectl taint nodes node-1 env=production:NoSchedule
-
-# Mark node for maintenance
-kubectl taint nodes node-2 maintenance=true:NoExecute
-
-# Prefer not to schedule GPU workloads
-kubectl taint nodes gpu-node-1 hardware=gpu:PreferNoSchedule
-```
-
-### Using Node Manifest
-```yaml
-apiVersion: v1
-kind: Node
-metadata:
-  name: node-1
-spec:
-  taints:
-  - key: "env"
-    value: "production"
-    effect: "NoSchedule"
-```
-
-## Removing a Taint from a Node
-
-### Basic Removal
-```sh
-kubectl taint nodes <node-name> <key>-
-```
-
-**Examples:**
-```sh
-# Remove taint with key 'env'
-kubectl taint nodes node-1 env-
-
-# Remove specific taint (when multiple exist with same key)
-kubectl taint nodes node-1 env=production:NoSchedule-
-```
-
-### Removing All Taints
-```sh
-kubectl taint nodes <node-name> --all
-```
-
-## Viewing Existing Taints
-
-### List all nodes with taints
-```sh
-kubectl get nodes -o custom-columns=NAME:.metadata.name,TAINTS:.spec.taints
-```
-
-### Detailed view for a specific node
-```sh
-kubectl describe node <node-name> | grep Taints
-```
-
-## Common Taint Examples
-
-| Use Case | Command Example |
-|----------|-----------------|
-| Dedicated production node | `kubectl taint nodes node-1 env=prod:NoSchedule` |
-| GPU node | `kubectl taint nodes gpu-node-1 hardware=gpu:NoSchedule` |
-| Maintenance mode | `kubectl taint nodes node-2 maintenance=true:NoExecute` |
-| SSD storage node | `kubectl taint nodes storage-1 disk=ssd:PreferNoSchedule` |
-
-## Best Practices
-
-1. **Naming Convention**:
-   - Use consistent key names (e.g., `env`, `hardware-type`)
-   - Prefer lowercase with hyphens for readability
-
-2. **Effect Selection**:
-   - Use `NoSchedule` for strict requirements
-   - Use `PreferNoSchedule` for soft preferences
-   - Use `NoExecute` carefully as it evicts running pods
-
-3. **Documentation**:
-   - Document taints in your cluster documentation
-   - Use annotations to explain taint purposes
-
-4. **Cleanup**:
-   - Remove taints when no longer needed
-   - Verify taint removal with `kubectl describe node`
-
-5. **Testing**:
-   - Test taints in non-production first
-   - Monitor pod eviction when using `NoExecute`
-
-```
-
-This markdown document provides:
-1. Clear section headers
-2. Both CLI and manifest examples
-3. Practical commands for common operations
-4. Best practices section
-5. Well-formatted tables for easy reference
-
-The structure makes it easy to find specific information while maintaining readability. You can extend any section by adding more examples or use cases as needed.
