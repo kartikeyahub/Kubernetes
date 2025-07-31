@@ -132,8 +132,9 @@ The document is well-organized and provides comprehensive information while rema
 
 
 Here's a clear `.md` format document explaining how to add and remove taints from Kubernetes nodes, with proper sections and examples:
+```
 
-```markdown
+
 # Kubernetes Node Taints Management
 
 ## Table of Contents
