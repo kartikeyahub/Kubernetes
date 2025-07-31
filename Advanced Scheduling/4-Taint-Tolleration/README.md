@@ -180,5 +180,3 @@ A: The scheduling restriction is immediately lifted, and pods without toleration
 
 **Q: How do I remove a taint?**  
 A: `kubectl taint node <node-name> <key>-` (note the trailing hyphen)
-```
-
