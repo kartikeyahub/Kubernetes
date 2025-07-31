@@ -102,7 +102,7 @@ metadata :
 spec :
   selector :
     matchLabels :
-      app : frontend
+      app : frontend   #the label is used at 2nd deployment
   replicas : 9
   template :
     metadata :
@@ -149,7 +149,7 @@ spec :
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
-              - key: app   #key-pair ' other deployment label'
+              - key: app   #key-pair ' 1st deployment label'
                 operator: In
                 values:
                 - frontend
