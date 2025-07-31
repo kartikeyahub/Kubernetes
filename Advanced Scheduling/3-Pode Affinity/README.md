@@ -1,5 +1,23 @@
 # **Pod Affinity & Anti-Affinity - Quick Guide**
 
+# Pod Affinity in Kubernetes
+
+## Core Concept
+
+**Pod Affinity** allows you to specify rules for scheduling pods relative to other pods. It ensures pods are placed on nodes based on their relationship to existing pods.
+
+## Key Note: Types of Affinity
+
+There are two main types:
+
+1. **podAffinity**  
+   - Attracts pods to nodes running specific other pods  
+   - Example: Deploy a logging agent where app pods are running
+
+2. **podAntiAffinity**  
+   - Repels pods from nodes running specific other pods  
+   - Example: Spread replicas across different nodes for high availability
+
 ### **1. What is Pod Affinity?**
 Controls **co-location** of Pods:
 - `podAffinity` = Schedule Pods **together** (same node/zone)
@@ -64,6 +82,13 @@ kubectl describe pod <name>  # View affinity rules
 > **📌 Note**: `topologyKey` must match node labels. Check with `kubectl get nodes --show-labels`.
 
 ---
+
+**Label your nodes**:
+   ```bash
+   # Server label
+   kubectl label nodes Kartikeyasoft-worker2 servertype=stage
+   kubectl label nodes Kartikeyasoft-worker3 servertype=prod
+  ```
 
 ## **1. Pod Affinity (`podAffinity`)**
 Ensures Pods are scheduled **on the same node** (or zone) as other Pods matching a label.
@@ -355,3 +380,5 @@ spec:
 - Combine with `nodeAffinity` for **hybrid rules**.
 
 Let me know if you need refinements! 🚀
+
+

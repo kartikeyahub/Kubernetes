@@ -26,7 +26,7 @@ Node Affinity is a Kubernetes feature that allows you to constrain which nodes y
    ```bash
    # Server label
    kubectl label nodes Kartikeyasoft-worker2 servertype=stage
-   kubectl label nodes Kartikeyasoft-worker2 servertype=prod
+   kubectl label nodes Kartikeyasoft-worker3 servertype=prod
 
    
    # Zone labels
