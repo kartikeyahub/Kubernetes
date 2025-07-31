@@ -1,6 +1,3 @@
-Here's a well-structured `README.md` file based on your content:
-
-```markdown
 # Kubernetes Taints and Tolerations
 
 ## Overview
