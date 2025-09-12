@@ -1,0 +1,193 @@
+# Kubernetes Horizontal Pod Autoscaler (HPA) Example
+
+## Overview
+
+This repository demonstrates how to set up and test a Horizontal Pod Autoscaler (HPA) in Kubernetes. HPA automatically scales the number of pods in a deployment based on observed CPU utilization or other custom metrics.
+
+## Prerequisites
+
+- A running Kubernetes cluster
+- Metrics Server installed in your cluster
+- kubectl configured to communicate with your cluster
+
+## Installation
+
+### 1. Deploy Metrics Server
+
+HPA requires Metrics Server to collect resource metrics:
+
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+
+Verify installation:
+```bash
+kubectl get deployment metrics-server -n kube-system
+```
+
+## Example Deployment
+
+### 1. Create a Deployment and Service
+
+Save the following as `deployment.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-apache
+spec:
+  selector:
+    matchLabels:
+      run: php-apache
+  template:
+    metadata:
+      labels:
+        run: php-apache
+    spec:
+      containers:
+      - name: php-apache
+        image: k8s.gcr.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: php-apache
+```
+
+Apply the deployment:
+```bash
+kubectl apply -f deployment.yaml
+```
+
+### 2. Create Horizontal Pod Autoscaler
+
+Save the following as `hpa.yaml`:
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php-apache
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php-apache
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+```
+
+Apply the HPA:
+```bash
+kubectl apply -f hpa.yaml
+```
+
+## Verification
+
+Check the status of your HPA:
+
+```bash
+kubectl get hpa php-apache --watch
+```
+
+You should see output similar to:
+```
+NAME         REFERENCE               TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   0%/50%    1         10        1          30s
+```
+
+## Load Testing
+
+### Generate Load
+
+To test the autoscaling, generate load with a temporary pod:
+
+```bash
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://php-apache; done"
+```
+
+### Monitor Autoscaling
+
+In a separate terminal, watch the HPA scale up:
+
+```bash
+kubectl get hpa php-apache --watch
+```
+
+You should see the CPU utilization increase and the replica count scale up:
+```
+NAME         REFERENCE               TARGETS    MINPODS   MAXPODS   REPLICAS   AGE
+php-apache   Deployment/php-apache   0%/50%     1         10        1          1m
+php-apache   Deployment/php-apache   250%/50%   1         10        4          2m
+php-apache   Deployment/php-apache   250%/50%   1         10        8          3m
+```
+
+### Stop Load Testing
+
+Terminate the load test by pressing `Ctrl+C` in the terminal running the load generator.
+
+After several minutes, watch the HPA scale down:
+
+```bash
+kubectl get hpa php-apache --watch
+```
+
+## Cleanup
+
+Delete the resources:
+
+```bash
+kubectl delete -f deployment.yaml
+kubectl delete -f hpa.yaml
+```
+
+## Important Notes
+
+1. **Metrics Server Requirement**: HPA requires metrics-server to collect pod metrics
+2. **Resource Requests**: Always set `resources.requests` in your deployment for HPA to work properly
+3. **Scaling Delays**: HPA checks metrics every 15-30 seconds by default, so scaling may take time to reflect
+4. **Cool Down Period**: After scaling up, HPA waits a cooldown period (default 5 minutes) before scaling down
+
+## Troubleshooting
+
+If HPA isn't working:
+
+1. Check if metrics-server is running:
+   ```bash
+   kubectl get pods -n kube-system | grep metrics-server
+   ```
+
+2. Check HPA description for events:
+   ```bash
+   kubectl describe hpa php-apache
+   ```
+
+3. Check if pods have resource requests:
+   ```bash
+   kubectl describe deployment php-apache
+   ```
+
+## Further Reading
+
+- [Kubernetes HPA Documentation](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Metrics Server GitHub](https://github.com/kubernetes-sigs/metrics-server)
