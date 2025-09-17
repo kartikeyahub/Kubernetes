@@ -126,9 +126,41 @@ containers:
 The `with` keyword is particularly valuable when working with optional nested configurations, making your Helm templates significantly cleaner and easier to maintain.
 
 
+Here are the complete `values.yaml` and `deployment.yaml` files demonstrating both the verbose and concise approaches:
 
+## values.yaml
 
-This error occurs because you have an extra `{{ end }}` without a matching `{{ if }}` or `{{ with }}`. Looking at your template, the issue is likely in the commented section. Here's the corrected version:
+```yaml
+# values.yaml
+
+# Application settings
+name: my-app
+environment: development
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Resources configuration
+resources:
+  # These values are optional - Helm will conditionally include them
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+# Other optional settings
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+```
 
 ## deployment.yaml (Corrected)
 
