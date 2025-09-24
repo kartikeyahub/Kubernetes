@@ -1,5 +1,4 @@
-# Kubernetes
-
+```markdown
 
 ## Steps to Install Prometheus:
 --------------------------------
@@ -33,6 +32,7 @@ kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-passwor
 
 Dashboards: https://grafana.com/grafana/dashboards/6417
 
+```
 ```
 
 ```markdown
