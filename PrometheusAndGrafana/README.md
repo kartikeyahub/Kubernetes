@@ -35,42 +35,76 @@ Dashboards: https://grafana.com/grafana/dashboards/6417
 
 ```
 
+```markdown
+# Alternative Grafana Dashboards for Kubernetes Monitoring
 
+This document provides a curated list of public Grafana.com dashboard IDs that serve as alternatives or complements to the classic "Kubernetes Cluster (Prometheus)" dashboard (ID 6417).
 
+## Direct Cluster Overview Alternatives
 
+These dashboards offer similar functionality to 6417 and can be used as drop-in replacements:
 
+- **10695** – *Kubernetes Cluster (Prometheus)*
+  - Newer revision with similar intent to 6417
+  - Fresher layout and updated panel set
+  - Recommended if you want a like-for-like but more up-to-date experience
 
+- **315** – *Kubernetes cluster monitoring (via Prometheus)*
+  - Older but very popular dashboard
+  - Broad node/pod/resource coverage
+  - Lighter weight and easier to customize
+  - Good choice if you need a leaner, broadly adopted dashboard
 
+## Complementary Dashboards
 
+These dashboards fill specific gaps and work well alongside cluster overview dashboards:
 
+- **13498** – *Kubernetes Pods monitoring via Prometheus*
+  - Focuses deeper on per-pod metrics
+  - Combine with a cluster overview dashboard for better drill-down capabilities
+  - Useful when your main challenge is investigating noisy or high-churn pods
 
+## Baseline Reference
 
+- **6417** – *Original/Kubernetes Cluster (Prometheus)*
+  - Keep as baseline if your team is already familiar with it
+  - Consider adding one of the alternative dashboards for enhanced visibility
 
+## Selection Guide
 
+| Use Case | Recommended Dashboard |
+|----------|---------------------|
+| Modern, up-to-date replacement | 10695 |
+| Lightweight, easily customizable | 315 |
+| Deep pod-level monitoring | 13498 (alongside cluster overview) |
+| Maintaining existing familiarity | 6417 (with complementary dashboards) |
 
+## Import Instructions
 
+To use any of these dashboards:
 
+1. Navigate to: Grafana UI → Dashboards → New → Import
+2. Enter the dashboard ID (e.g., 10695)
+3. Click "Load"
+4. Map to your Prometheus data source
+5. Click "Import"
 
+## Need More Specific Dashboards?
 
+If you require additional monitoring perspectives, here are some categories I can help with:
 
+- **kube-state-metrics** object health
+- **node-exporter** full system metrics
+- **Workload-specific** monitoring (deployments, statefulsets, etc.)
+- **Networking** (service mesh, ingress, network policies)
+- **Storage** (persistent volumes, storage classes)
 
+Let me know which perspective you're interested in, and I'll provide relevant dashboard IDs.
 
+## Additional Resources
 
+- Comparison matrix of panel coverage
+- Recommended panel pruning tips for performance optimization
+- Data source configuration guidance
 
-
-
-
-### Method 1: Using Different Value Files
-```bash
-# Development (uses default values.yaml)
-helm install my-app ./my-chart
-
-# Staging
-helm install my-app ./my-chart -f values-staging.yaml
-
-# Production
-helm install my-app ./my-chart -f values-production.yaml
-
-# Upgrade with different environment
-helm upgrade my-app ./my-chart -f values-production.yaml
 ```
