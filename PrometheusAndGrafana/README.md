@@ -32,10 +32,7 @@ kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-passwor
 
 Dashboards: https://grafana.com/grafana/dashboards/6417
 
-```
-```
 
-```markdown
 # Alternative Grafana Dashboards for Kubernetes Monitoring
 
 This document provides a curated list of public Grafana.com dashboard IDs that serve as alternatives or complements to the classic "Kubernetes Cluster (Prometheus)" dashboard (ID 6417).
